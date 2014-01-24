@@ -9,6 +9,7 @@
 			import flash.utils.setTimeout;
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
+				JMSGDataManager.instance.showSelectForbidden(true);
 				Command.instance.sendCommand(onInsertOver,"insertDataToRedis",[ipaddress.text,port.text,indexSelect.text]);				
 				statusShow.visible = true;
 				btnInsert.enabled = false;
@@ -20,6 +21,7 @@
 				{
 					statusShow.text = "插入完成";
 					btnInsert.enabled = false;
+					JMSGDataManager.instance.showSelectForbidden(false);
 				}
 				else
 				{

@@ -41,26 +41,28 @@
 			{
 				dataExporter.visible = true;
 				dataInsertor.visible = false;
+				dbDataInsertor.visible = false;
 			}
 			
 			protected function radioInsert_changeHandler(event:Event):void
 			{
 				dataExporter.visible = false;
 				dataInsertor.visible = true;
+				dbDataInsertor.visible = false;
+			}
+			
+			protected function radioUpdate_changeHandler(event:Event):void
+			{
+				dataExporter.visible = false;
+				dataInsertor.visible = false;
+				dbDataInsertor.visible = true;
 			}
 			
 			public function showSelectForbidden(bForbidden:Boolean):void
 			{
-				if(!bForbidden)
-				{
-					rddioExport.enabled = true;
-					radioInsert.enabled = true;
-				}
-				else
-				{
-					rddioExport.enabled = false;
-					radioInsert.enabled = false;
-				}
+				rddioExport.enabled = !bForbidden;
+				radioInsert.enabled = !bForbidden;
+				radioUpdate.enabled = !bForbidden;
 			}
 			
 		]]>
@@ -75,10 +77,12 @@
 		<s:HGroup gap="10" horizontalCenter="0">
 			<s:RadioButton id="rddioExport" label="导出数据" group="{radioButtonGroup}" change="rddioExport_changeHandler(event)" selected="true"/>
 			<s:RadioButton id="radioInsert" label="插入数据" group="{radioButtonGroup}" change="radioInsert_changeHandler(event)"/>
+			<s:RadioButton id="radioUpdate" label="更新数据" group="{radioButtonGroup}" change="radioUpdate_changeHandler(event)"/>
 		</s:HGroup>
 		<s:Group >
 			<local:DataExport id="dataExporter" horizontalCenter="0" verticalCenter="0" />
 			<local:InsertDataToRedis id="dataInsertor" horizontalCenter="0" verticalCenter="0" visible="false" />
+			<local:UpdateDataToDBS id="dbDataInsertor" horizontalCenter="0" verticalCenter="0" visible="false" />
 		</s:Group>
 	</s:VGroup>
 	

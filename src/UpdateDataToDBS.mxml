@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" width="264" height="124">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			protected function btnOK_clickHandler(event:MouseEvent):void
+			{
+				if(sourceDB.selectedItem["type"] == targetDB.selectedItem["type"])
+				{
+					Alert.show("不能更新相同数据库");					
+				}
+				else
+				{
+					Alert.show("确定要更新数据吗","确认",Alert.YES | Alert.NO,null,sureHandler);	
+				}
+			}
+			
+			private function sureHandler(event:CloseEvent):void
+			{
+				if(event.detail == Alert.NO)
+					return;
+				JMSGDataManager.instance.showSelectForbidden(true);
+				Command.instance.sendCommand(onUpdateComplete,"transferData",[sourceDB.selectedItem["type"],targetDB.selectedItem["type"]]);	
+			}
+			
+			private function onUpdateComplete(data:Array):void
+			{
+				JMSGDataManager.instance.showSelectForbidden(true);
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:VGroup horizontalAlign="center" horizontalCenter="0" verticalCenter="0">
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="源数据库" />
+			<s:ComboBox id="sourceDB" width="135" dataProvider="{DBConfigs.allSpecialTypes}" labelField="desc" selectedIndex="0" />	
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="目标数据库"/>
+			<s:ComboBox id="targetDB" width="150" dataProvider="{DBConfigs.allSpecialTypes}" labelField="desc" selectedIndex="1" />
+		</s:HGroup>
+		<s:Button label="确定" id="btnOK" click="btnOK_clickHandler(event)" />
+	</s:VGroup>
+	
+</s:BorderContainer>
