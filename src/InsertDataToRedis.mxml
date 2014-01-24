@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   width="406" height="54" xmlns:local="*">
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.setTimeout;
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				Command.instance.sendCommand(onInsertOver,"insertDataToRedis",[ipaddress.text,port.text,indexSelect.text]);				
+				statusShow.visible = true;
+				btnInsert.enabled = false;
+			}
+			
+			private function onInsertOver(param:Array):void
+			{
+				if(param && param[0])
+				{
+					statusShow.text = "插入完成";
+					btnInsert.enabled = false;
+				}
+				else
+				{
+					statusShow.text = "出现错误请检查";
+					btnInsert.enabled = true;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" paddingTop="5"/>
+	</s:layout>
+	<s:Label id="statusShow" text="准备就绪" />
+	<s:HGroup gap="8" verticalAlign="middle">
+		<s:Label text="地址" verticalAlign="middle"/>
+		<s:TextInput id="ipaddress" width="112" textAlign="center" text="172.26.72.2"/>
+		<s:Label text="端口"  verticalAlign="middle"/>
+		<s:TextInput id="port" width="46" textAlign="center" text="6379"/>
+		<s:Label text="index" />
+		<s:TextInput id="indexSelect" width="30" text="0" />
+		<s:Button id="btnInsert" width="62" label="导入" click="button1_clickHandler(event)" buttonMode="true"
+				  horizontalCenter="113" verticalCenter="0"/>
+	</s:HGroup>
+	
+</s:BorderContainer>

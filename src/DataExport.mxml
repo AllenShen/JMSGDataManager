@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   width="356" height="168" xmlns:local="*" creationComplete="windowedapplication2_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import defines.ArmInfoObj;
+			import defines.BattleCard;
+			import defines.BossGuanQiaInfo;
+			import defines.ChapterGuanQiaInfo;
+			import defines.ChapterInfo;
+			import defines.DanBoInfo;
+			import defines.EnemyUnit;
+			import defines.GuanQiaHeroInfo;
+			import defines.GuanQiaInfo;
+			import defines.HeroInfo;
+			import defines.HuoDongInfo;
+			import defines.Quest;
+			import defines.ShenQiInfo;
+			import defines.Skill;
+			
+			import flash.utils.describeType;
+			import flash.utils.getDefinitionByName;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
+			import tools.Json.JSON;
+			
+			private static var fileType:String = ".cfg";
+			
+			private static var Data_Arm:int = 1;
+			private static var Data_Hero:int = 2;
+			private static var Data_Skill:int = 3;
+			private static var Data_Chapter:int = 4;
+			private static var Data_ChapterGuanQia:int = 5;
+			private static var Data_GuanQia:int = 6;
+			private static var Data_Danbo:int = 7;
+			private static var Data_Enemyunit:int = 8;
+			private static var Data_ZhenShouHero:int = 9;
+			private static var Data_BattleCard:int = 10;
+			private static var Data_Quest:int = 11;
+			private static var Data_BossGuanQiaInfo:int = 12;
+			private static var Data_HuodongInfo:int = 13;
+			private static var Data_HuodongGuanQiaInfo:int = 14;
+			private static var Data_ShenQiQiInfo:int = 15;
+			
+			private static var allFileNames:ArrayCollection = new ArrayCollection(
+				[
+					{"type":Data_Arm,"desc":"armInfo"},
+					{"type":Data_Hero,"desc":"heroInfo"},
+					{"type":Data_Skill,"desc":"skill"},
+					{"type":Data_Chapter,"desc":"chapterInfo"},
+					{"type":Data_ChapterGuanQia,"desc":"chapterGuanQiaInfo"},
+					{"type":Data_GuanQia,"desc":"guanqiaInfo"},
+					{"type":Data_Danbo,"desc":"danboInfo"},
+					{"type":Data_Enemyunit,"desc":"enemyUnit"},
+					{"type":Data_ZhenShouHero,"desc":"guanQiaHeroInfo"},
+					{"type":Data_BattleCard,"desc":"battlecardinfo"},
+					{"type":Data_Quest,"desc":"quest"},
+					{"type":Data_BossGuanQiaInfo,"desc":"bossGuanQiaInfo"},
+					{"type":Data_HuodongInfo,"desc":"huodongInfo"},
+					{"type":Data_HuodongGuanQiaInfo,"desc":"huodongGuanQiaInfo"},
+					{"type":Data_ShenQiQiInfo,"desc":"shenqiInfo"}
+				]
+			);
+			
+			private static var allCommands:ArrayCollection = new ArrayCollection(
+				[
+					{"type":Data_Arm,"desc":"getAllArmList"},
+					{"type":Data_Hero,"desc":"getAllHeroInfo"},
+					{"type":Data_Skill,"desc":"getSkillList"},
+					{"type":Data_Chapter,"desc":"getAllChapters"},
+					{"type":Data_ChapterGuanQia,"desc":"getAllChapterGuanQiaInfo"},
+					{"type":Data_GuanQia,"desc":"getAllSimpleGuanQiaInfo"},
+					{"type":Data_Danbo,"desc":"getAllDanBoInfo"},
+					{"type":Data_Enemyunit,"desc":"getAllEnemyUnit"},
+					{"type":Data_ZhenShouHero,"desc":"getAllGuanQiaHeroInfo"},
+					{"type":Data_BattleCard,"desc":"getallbattlecardinfo"},
+					{"type":Data_Quest,"desc":"getAllQuestList"},
+					{"type":Data_BossGuanQiaInfo,"desc":"getAllBossGuanQiaInfo"},
+					{"type":Data_HuodongInfo,"desc":"getAllHuodongInfo"},
+					{"type":Data_HuodongGuanQiaInfo,"desc":"getAllHuoDongGuanQiaInfo"},
+					{"type":Data_ShenQiQiInfo,"desc":"getAllShenQiInfo"}
+				]
+			);
+			
+			private static var allReflectClass:ArrayCollection = new ArrayCollection(
+				[
+					{"type":Data_Arm,"desc":ArmInfoObj},
+					{"type":Data_Hero,"desc":HeroInfo},
+					{"type":Data_Skill,"desc":Skill},
+					{"type":Data_Chapter,"desc":ChapterInfo},
+					{"type":Data_ChapterGuanQia,"desc":ChapterGuanQiaInfo},
+					{"type":Data_GuanQia,"desc":GuanQiaInfo},
+					{"type":Data_Danbo,"desc":DanBoInfo},
+					{"type":Data_Enemyunit,"desc":EnemyUnit},
+					{"type":Data_ZhenShouHero,"desc":GuanQiaHeroInfo},
+					{"type":Data_BattleCard,"desc":BattleCard},
+					{"type":Data_Quest,"desc":Quest},
+					{"type":Data_BossGuanQiaInfo,"desc":BossGuanQiaInfo},
+					{"type":Data_HuodongInfo,"desc":HuoDongInfo},
+					{"type":Data_HuodongGuanQiaInfo,"desc":GuanQiaInfo},
+					{"type":Data_ShenQiQiInfo,"desc":ShenQiInfo}
+				]
+			);
+			
+			private var allCheckBoxs:Array = [];
+			
+			private var curCommandsNeed:Object = {};
+			private var curDatas:Object = {};
+			
+			private var curAskDataType:int = 0;
+			
+			[Bindable]
+			private var canExport:Boolean = false;
+			
+			private var fileToExport:File;
+			
+			private function getFileNameByType(type:int):String
+			{
+				for(var i:int = 0;i < allFileNames.length;i++)
+				{
+					var singleObj:Object = allFileNames.getItemAt(i);
+					if(singleObj == null || singleObj["type"] != type)
+						continue;
+					return singleObj["desc"];
+				}
+				return null;
+			}
+			
+			private function getReflectNameByType(type:int):Class
+			{
+				for(var i:int = 0;i < allReflectClass.length;i++)
+				{
+					var singleObj:Object = allReflectClass.getItemAt(i);
+					if(singleObj == null || singleObj["type"] != type)
+						continue;
+					return singleObj["desc"];
+				}
+				return null;
+			}
+			
+			private function getDataAskCommand(type:int):String
+			{
+				for(var i:int = 0;i < allCommands.length;i++)
+				{
+					var singleObj:Object = allCommands.getItemAt(i);
+					if(singleObj == null || singleObj["type"] != type)
+						continue;
+					return singleObj["desc"];
+				}
+				return null;
+			}
+			
+			protected function btnOk_clickHandler(event:MouseEvent):void
+			{
+				btnOk.enabled = false;
+				statusShow.text = "正在读取数据。。。。";
+				canExport = false;
+				curDatas = {};
+				curCommandsNeed = {};
+				
+				var commandNeed:String = "";
+				
+				for(var i:int = 0;i < allCheckBoxs.length;i++)
+				{
+					var singleCheckBox:CheckBox = allCheckBoxs[i];
+					if(singleCheckBox && singleCheckBox.selected)
+					{
+						var type:int = int(singleCheckBox.name);
+						commandNeed = getDataAskCommand(type);
+						curCommandsNeed[type] = commandNeed;
+					}
+				}
+				
+				JMSGDataManager.instance.showSelectForbidden(true);
+				
+				handlerdataAskLogic();
+			}
+			
+			private function handlerdataAskLogic():void
+			{
+				var found:Boolean = false;
+				for(var singleLKey:String in curCommandsNeed)
+				{
+					curAskDataType = int(singleLKey);
+					getSingleCommandLogic(curCommandsNeed[singleLKey]);
+					delete curCommandsNeed[singleLKey];
+					found = true;
+					break;
+				}
+				if(!found)
+				{
+					canExport = true;
+					btnOk.enabled = true;
+					statusShow.text = "读取完毕，可以导出";
+					JMSGDataManager.instance.showSelectForbidden(false);
+				}
+			}
+			
+			private function getSingleCommandLogic(command:String):void
+			{
+				if(command == null || command == "")
+				{
+					handlerdataAskLogic();
+					return;
+				}
+				Command.instance.sendCommand(onSingleDataGot,command,[]);
+			}
+			
+			private function onSingleDataGot(param:Array):void
+			{
+				var totalJason:String = "";
+				var newParamArr:Array = [];
+				var classInfo:Class  = getReflectNameByType(curAskDataType);
+				var allTypes:XML = describeType(classInfo);
+				var properties:XMLList = allTypes.factory..accessor.(@access != "writeonly") + allTypes..variable;
+				
+				var allPropertied:Array = [];
+				for each (var propertyInfo:XML in properties)
+				{
+					var properName:String = propertyInfo.@name;
+					allPropertied.push(properName);	
+				}
+				
+				for(var i:int = 0;i < param.length;i++)
+				{
+					var originalData:Object = param[i];
+					var realNewObj:Object = {};
+					
+					var nonParams:Array = [];
+					if(originalData.hasOwnProperty("getNonOriginalData"))
+					{
+						var temoFunc:Function = originalData["getNonOriginalData"] as Function;
+						if(temoFunc != null)
+						{
+							nonParams = temoFunc();
+						}
+						if(nonParams == null)
+							nonParams = [];
+					}
+					
+					for each(var singleKey:String in allPropertied)
+					{
+						if(originalData.hasOwnProperty(singleKey) && nonParams.indexOf(singleKey) < 0)
+						{
+							realNewObj[singleKey] = originalData[singleKey];
+						}
+					}
+					newParamArr.push(realNewObj);
+				}
+				
+				if(newParamArr.length == param.length)
+				{
+					totalJason = tools.Json.JSON.encode(newParamArr);
+				}
+				else
+				{
+					totalJason = tools.Json.JSON.encode(param);
+				}
+				curDatas[curAskDataType] = totalJason;
+				
+				handlerdataAskLogic();
+			}
+			
+			protected function btnExport_clickHandler(event:MouseEvent):void
+			{
+				fileToExport = new File();
+				fileToExport.browseForDirectory("选择导出文件夹");
+				fileToExport.addEventListener(Event.SELECT,directoryToExportSelected);
+			}
+			
+			//文件夹选择完成
+			private function directoryToExportSelected(event:Event):void
+			{
+				var singleFile:File;				//单个文件
+				var targetFile:File = event.target as File;
+				fileType = fileTypeInput.text.toString();
+				
+				if(targetFile.isDirectory)
+				{
+					for(var singleType:String in curDatas)
+					{
+						var singleFileName:String = getFileNameByType(int(singleType));
+						if(singleFileName == null)
+							continue;
+						var singleStream:FileStream = new FileStream;
+						singleFile = new File(targetFile.url + "/" + singleFileName + fileType);
+						singleStream.open(singleFile,FileMode.WRITE);
+						singleStream.writeUTFBytes(curDatas[singleType]);
+						singleStream.close();
+					}
+				}
+				statusShow.text = "准备就绪";
+				btnOk.enabled = true;
+				canExport = false;
+			}
+			
+			protected function btnExit_clickHandler(event:MouseEvent):void
+			{
+			}
+			
+			protected function windowedapplication2_creationCompleteHandler(event:FlexEvent):void
+			{
+				allCheckBoxs = [armCheck,heroCheck,skillCheck,chapterCheck,chapterGuanQiaCheck,guangqiaCheck,danboCheck,enemyUnitCheck,guanqiaHeroInfoCheck,
+					battlecardData,questData,bossGuanQiaCheck,huodongInfo,huodongguanqiainfo,shenqiInfo];
+			}
+			
+			protected function selectAll_changeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				for(var i:int = 0;i < allCheckBoxs.length;i++)
+				{
+					var singleCheckBox:CheckBox = allCheckBoxs[i];
+					if(singleCheckBox == null)
+						continue;
+					singleCheckBox.selected = selectAll.selected;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:BorderContainer id="allSelectors" top="5" height="97" backgroundAlpha="0" borderAlpha="1"
+					   horizontalCenter="0">
+		<s:layout >
+			<s:VerticalLayout gap="5" />
+		</s:layout>
+		<s:HGroup horizontalCenter="0" >
+			<s:CheckBox id="armCheck" label="兵种数据" selected="true" name="1"/>
+			<s:CheckBox id="heroCheck" label="英雄数据" selected="true" name="2"/>
+			<s:CheckBox id="skillCheck" label="技能数据" selected="true" name="3"/>
+			<s:CheckBox id="bossGuanQiaCheck" label="boss关卡数据" selected="true" name="12"/>
+		</s:HGroup>
+		<s:HGroup horizontalCenter="0">
+			<s:CheckBox id="chapterCheck" label="章节数据" selected="true" name="4"/>
+			<s:CheckBox id="chapterGuanQiaCheck" label="章节关卡数据" selected="true" name="5"/>
+			<s:CheckBox id="guangqiaCheck" label="关卡数据" selected="true" name="6"/>
+			<s:CheckBox id="danboCheck" label="单波敌人数据" selected="true" name="7"/>
+		</s:HGroup>
+		<s:HGroup horizontalCenter="0">
+			<s:CheckBox id="enemyUnitCheck" label="敌人单位" selected="true" name="8"/>
+			<s:CheckBox id="guanqiaHeroInfoCheck" label="镇守英雄数据" selected="true" name="9"/>
+			<s:CheckBox id="battlecardData" label="卡牌数据" selected="true" name="10"/>
+			<s:CheckBox id="questData" label="任务数据" selected="true" name="11"/>
+		</s:HGroup>
+		<s:HGroup horizontalCenter="0">
+			<s:CheckBox id="huodongInfo" label="活动信息" selected="true" name="13" />
+			<s:CheckBox id="huodongguanqiainfo" label="活动关卡信息" selected="true" name="14" />
+			<s:CheckBox id="shenqiInfo" label="神器信息" selected="true" name="15" />
+		</s:HGroup>
+	</s:BorderContainer>
+	
+	<s:HGroup horizontalAlign="center" verticalAlign="middle" horizontalCenter="0" bottom="5">
+		<s:Button buttonMode="true" id="btnOk" click="btnOk_clickHandler(event)" label="读取"/>
+		<s:Button buttonMode="true" id="btnExport" click="btnExport_clickHandler(event)" label="导出" enabled="{canExport}"/>
+	</s:HGroup>
+	
+	<s:HGroup y="110" horizontalAlign="center" horizontalCenter="0" gap="10" verticalAlign="middle">
+		<s:CheckBox id="selectAll" change="selectAll_changeHandler(event)" label="全选" selected="true" />
+		<s:Label x="-8" y="61" width="144" text="准备就绪" textAlign="center" id="statusShow"/>
+		<s:Label text="后缀名" verticalAlign="middle" />
+		<s:TextInput id="fileTypeInput" text=".cfg" width="80" />
+	</s:HGroup>
+</s:BorderContainer>
