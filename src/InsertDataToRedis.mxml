@@ -53,7 +53,7 @@
 	<s:HGroup width="289" gap="8" verticalAlign="middle">
 		<s:Label text="地址" verticalAlign="middle"/>
 		
-		<s:ComboBox id="needPushReward" width="165" dataProvider="{JMSGManagerConfigPanel.instance.allDBS}" labelField="name" 
+		<s:ComboBox id="needPushReward" width="165" dataProvider="{JMSGManagerConfigPanel.instance.allGameDBs}" labelField="name" 
 					selectedIndex="0"/>
 		<s:Button id="btnInsert" width="62" label="导入" click="button1_clickHandler(event)" buttonMode="true"
 				  horizontalCenter="113" verticalCenter="0"/>
