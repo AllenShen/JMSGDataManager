@@ -9,9 +9,9 @@
 			import mx.events.CloseEvent;
 			protected function btnOK_clickHandler(event:MouseEvent):void
 			{
-				if(sourceDB.selectedItem["type"] == targetDB.selectedItem["type"])
+				if(sourceDB.selectedItem["dbname"] == targetDB.selectedItem["dbname"])
 				{
-					Alert.show("不能更新相同数据库");					
+					Alert.show("不能更新相同数据库");				
 				}
 				else
 				{
@@ -24,14 +24,13 @@
 				if(event.detail == Alert.NO)
 					return;
 				JMSGDataManager.instance.showSelectForbidden(true);
-				Command.instance.sendCommand(onUpdateComplete,"transferData",[sourceDB.selectedItem["type"],targetDB.selectedItem["type"]]);	
+				Command.instance.sendCommand(onUpdateComplete,"transferEditorData",[sourceDB.selectedItem["dbname"],targetDB.selectedItem["dbname"]]);	
 			}
 			
 			private function onUpdateComplete(data:Array):void
 			{
 				JMSGDataManager.instance.showSelectForbidden(true);
 			}
-			
 			
 		]]>
 	</fx:Script>
@@ -43,11 +42,11 @@
 	<s:VGroup horizontalAlign="center" horizontalCenter="0" verticalCenter="0">
 		<s:HGroup verticalAlign="middle">
 			<s:Label text="源数据库" />
-			<s:ComboBox id="sourceDB" width="135" dataProvider="{DBConfigs.allSpecialTypes}" labelField="desc" selectedIndex="0" />	
+			<s:ComboBox id="sourceDB" width="135" dataProvider="{JMSGManagerConfigPanel.instance.allEditorDBs}" labelField="name" selectedIndex="0" />	
 		</s:HGroup>
 		<s:HGroup verticalAlign="middle">
 			<s:Label text="目标数据库"/>
-			<s:ComboBox id="targetDB" width="150" dataProvider="{DBConfigs.allSpecialTypes}" labelField="desc" selectedIndex="1" />
+			<s:ComboBox id="targetDB" width="150" dataProvider="{JMSGManagerConfigPanel.instance.allEditorDBs}" labelField="name" selectedIndex="1" />
 		</s:HGroup>
 		<s:Button label="确定" id="btnOK" click="btnOK_clickHandler(event)" />
 	</s:VGroup>

@@ -9,17 +9,46 @@
 			import flash.utils.setTimeout;
 			
 			import mx.controls.Alert;
+			
+			private var curInsertIndex:int = 0;
+			private var allTables:Array = ["armInfo","battlecard","chapterGuanQiaInfo","chapterInfo","danboInfo","enemyUnit",
+				"guanQiaHeroInfo","guanqiaInfo","heroInfo","skill","quest","bossGuanQiaInfo","huodonginfo","huodongguanqiaInfo",
+				"shenqiInfo","scatteredGuanqiaInfo"];
+			
+			private var allTableIds:Array = ["armid","cardid","cgqid","cpid","boshuId","euid",
+				"ghid","guanqiaid","heroid","skillid","qid","bossGuanQiaId","hid","guanqiaid","sid","guanqiaid"];
+			
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
-				
 				var curInsertDestination:SingleServer = needPushReward.selectedItem as SingleServer;
 				if(curInsertDestination == null)
 				{
 					Alert.show("请选择服务器");
 					return;
 				}
+				statusShow.text = "正在插入中";
 				JMSGDataManager.instance.showSelectForbidden(true);
-				Command.instance.sendCommand(onInsertOver,"insertDataToRedis",[curInsertDestination.redisIp,curInsertDestination.redisPort,curInsertDestination.redisIndex]);				
+				
+				if(1 == 1)
+				{
+					if(event)
+					{
+						curInsertIndex = 0;
+					}
+					Command.instance.sendCommand(onSingleInsertDone,"insertDataToRedisOneByOne",[curInsertDestination.redisIp,
+						curInsertDestination.redisPort,
+						curInsertDestination.redisIndex,
+						allTables[curInsertIndex],
+						allTableIds[curInsertIndex]
+					]);
+					statusShow.text = (curInsertIndex+1).toString() + "/" + allTableIds.length.toString() + "   当前插入： " + allTables[curInsertIndex].toString();
+					curInsertIndex++;
+				}
+				else
+				{
+					Command.instance.sendCommand(onInsertOver,"insertDataToRedis",[curInsertDestination.redisIp,curInsertDestination.redisPort,curInsertDestination.redisIndex]);					
+				}
+				
 				statusShow.visible = true;
 				btnInsert.enabled = false;
 			}
@@ -28,9 +57,31 @@
 			{
 				if(param && param[0])
 				{
-					statusShow.text = "插入完成";
+					statusShow.text = "准备就绪";
 					btnInsert.enabled = true;
 					JMSGDataManager.instance.showSelectForbidden(false);
+				}
+				else
+				{
+					statusShow.text = "出现错误请检查";
+					btnInsert.enabled = true;
+				}
+			}
+			
+			private function onSingleInsertDone(param:Array):void
+			{
+				if(param && param[0])
+				{
+					if(curInsertIndex == allTables.length)
+					{
+						statusShow.text = "准备就绪";
+						btnInsert.enabled = true;
+						JMSGDataManager.instance.showSelectForbidden(false);
+					}
+					else
+					{
+						button1_clickHandler(null);
+					}
 				}
 				else
 				{

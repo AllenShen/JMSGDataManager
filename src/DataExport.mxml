@@ -46,6 +46,7 @@
 			private static var Data_HuodongInfo:int = 13;
 			private static var Data_HuodongGuanQiaInfo:int = 14;
 			private static var Data_ShenQiQiInfo:int = 15;
+			private static var Data_ScatteredGuanQia:int = 16;
 			
 			private static var allFileNames:ArrayCollection = new ArrayCollection(
 				[
@@ -63,7 +64,8 @@
 					{"type":Data_BossGuanQiaInfo,"desc":"bossGuanQiaInfo"},
 					{"type":Data_HuodongInfo,"desc":"huodongInfo"},
 					{"type":Data_HuodongGuanQiaInfo,"desc":"huodongGuanQiaInfo"},
-					{"type":Data_ShenQiQiInfo,"desc":"shenqiInfo"}
+					{"type":Data_ShenQiQiInfo,"desc":"shenqiInfo"},
+					{"type":Data_ScatteredGuanQia,"desc":"scatteredGuanQiaInfo"}
 				]
 			);
 			
@@ -83,7 +85,8 @@
 					{"type":Data_BossGuanQiaInfo,"desc":"getAllBossGuanQiaInfo"},
 					{"type":Data_HuodongInfo,"desc":"getAllHuodongInfo"},
 					{"type":Data_HuodongGuanQiaInfo,"desc":"getAllHuoDongGuanQiaInfo"},
-					{"type":Data_ShenQiQiInfo,"desc":"getAllShenQiInfo"}
+					{"type":Data_ShenQiQiInfo,"desc":"getAllShenQiInfo"},
+					{"type":Data_ScatteredGuanQia,"desc":"getAllScatteredGuanQias"}
 				]
 			);
 			
@@ -103,7 +106,8 @@
 					{"type":Data_BossGuanQiaInfo,"desc":BossGuanQiaInfo},
 					{"type":Data_HuodongInfo,"desc":HuoDongInfo},
 					{"type":Data_HuodongGuanQiaInfo,"desc":GuanQiaInfo},
-					{"type":Data_ShenQiQiInfo,"desc":ShenQiInfo}
+					{"type":Data_ShenQiQiInfo,"desc":ShenQiInfo},
+					{"type":Data_ScatteredGuanQia,"desc":GuanQiaInfo}
 				]
 			);
 			
@@ -306,7 +310,7 @@
 			protected function windowedapplication2_creationCompleteHandler(event:FlexEvent):void
 			{
 				allCheckBoxs = [armCheck,heroCheck,skillCheck,chapterCheck,chapterGuanQiaCheck,guangqiaCheck,danboCheck,enemyUnitCheck,guanqiaHeroInfoCheck,
-					battlecardData,questData,bossGuanQiaCheck,huodongInfo,huodongguanqiainfo,shenqiInfo];
+					battlecardData,questData,bossGuanQiaCheck,huodongInfo,huodongguanqiainfo,shenqiInfo,scatteredInfo];
 			}
 			
 			protected function selectAll_changeHandler(event:Event):void
@@ -351,6 +355,7 @@
 			<s:CheckBox id="huodongInfo" label="活动信息" selected="true" name="13" />
 			<s:CheckBox id="huodongguanqiainfo" label="活动关卡信息" selected="true" name="14" />
 			<s:CheckBox id="shenqiInfo" label="神器信息" selected="true" name="15" />
+			<s:CheckBox id="scatteredInfo" label="独立副本信息" selected="true" name="16" />
 		</s:HGroup>
 	</s:BorderContainer>
 	
