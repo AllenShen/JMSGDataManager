@@ -2,7 +2,7 @@
 <s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 					   xmlns:s="library://ns.adobe.com/flex/spark"
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
-					   width="326" height="54" xmlns:local="*">
+					   width="326" height="86" xmlns:local="*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -13,10 +13,10 @@
 			private var curInsertIndex:int = 0;
 			private var allTables:Array = ["armInfo","battlecard","chapterGuanQiaInfo","chapterInfo","danboInfo","enemyUnit",
 				"guanQiaHeroInfo","guanqiaInfo","heroInfo","skill","quest","bossGuanQiaInfo","huodonginfo","huodongguanqiaInfo",
-				"shenqiInfo","scatteredGuanqiaInfo"];
+				"shenqiInfo","scatteredGuanqiaInfo","productInfo_91"];
 			
 			private var allTableIds:Array = ["armid","cardid","cgqid","cpid","boshuId","euid",
-				"ghid","guanqiaid","heroid","skillid","qid","bossGuanQiaId","hid","guanqiaid","sid","guanqiaid"];
+				"ghid","guanqiaid","heroid","skillid","qid","bossGuanQiaId","hid","guanqiaid","sid","guanqiaid","productID"];
 			
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
@@ -46,7 +46,12 @@
 				}
 				else
 				{
-					Command.instance.sendCommand(onInsertOver,"insertDataToRedis",[curInsertDestination.redisIp,curInsertDestination.redisPort,curInsertDestination.redisIndex]);					
+					var paltformId:int = 0;
+					if(ndproductitem.selected)
+					{
+						paltformId = 1;
+					}
+					Command.instance.sendCommand(onInsertOver,"insertDataToRedis",[curInsertDestination.redisIp,curInsertDestination.redisPort,curInsertDestination.redisIndex,paltformId]);					
 				}
 				
 				statusShow.visible = true;
@@ -108,6 +113,10 @@
 					selectedIndex="0"/>
 		<s:Button id="btnInsert" width="62" label="导入" click="button1_clickHandler(event)" buttonMode="true"
 				  horizontalCenter="113" verticalCenter="0"/>
+	</s:HGroup>
+	
+	<s:HGroup >
+		<s:CheckBox id="ndproductitem" selected="false" label="91商品信息" />
 	</s:HGroup>
 	
 </s:BorderContainer>

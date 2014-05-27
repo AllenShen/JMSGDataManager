@@ -80,7 +80,7 @@
 			<s:RadioButton id="radioUpdate" label="更新数据" group="{radioButtonGroup}" change="radioUpdate_changeHandler(event)"/>
 		</s:HGroup>
 		<s:Group >
-			<local:DataExport id="dataExporter" horizontalCenter="0" verticalCenter="0" />
+			<local:DataExport id="dataExporter" height="192" horizontalCenter="0" verticalCenter="0"/>
 			<local:InsertDataToRedis id="dataInsertor" horizontalCenter="0" verticalCenter="0" visible="false" />
 			<local:UpdateDataToDBS id="dbDataInsertor" horizontalCenter="0" verticalCenter="0" visible="false" />
 		</s:Group>

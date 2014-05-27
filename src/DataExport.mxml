@@ -2,7 +2,7 @@
 <s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 					   xmlns:s="library://ns.adobe.com/flex/spark"
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
-					   width="356" height="168" xmlns:local="*" creationComplete="windowedapplication2_creationCompleteHandler(event)">
+					   width="356" height="212" xmlns:local="*" creationComplete="windowedapplication2_creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import defines.ArmInfoObj;
@@ -16,6 +16,7 @@
 			import defines.GuanQiaInfo;
 			import defines.HeroInfo;
 			import defines.HuoDongInfo;
+			import defines.ProductInfo91;
 			import defines.Quest;
 			import defines.ShenQiInfo;
 			import defines.Skill;
@@ -47,6 +48,7 @@
 			private static var Data_HuodongGuanQiaInfo:int = 14;
 			private static var Data_ShenQiQiInfo:int = 15;
 			private static var Data_ScatteredGuanQia:int = 16;
+			private static var Data_91ShopItem:int = 17;
 			
 			private static var allFileNames:ArrayCollection = new ArrayCollection(
 				[
@@ -65,7 +67,8 @@
 					{"type":Data_HuodongInfo,"desc":"huodongInfo"},
 					{"type":Data_HuodongGuanQiaInfo,"desc":"huodongGuanQiaInfo"},
 					{"type":Data_ShenQiQiInfo,"desc":"shenqiInfo"},
-					{"type":Data_ScatteredGuanQia,"desc":"scatteredGuanQiaInfo"}
+					{"type":Data_ScatteredGuanQia,"desc":"scatteredGuanQiaInfo"},
+					{"type":Data_91ShopItem,"desc":"productInfo"}
 				]
 			);
 			
@@ -86,7 +89,8 @@
 					{"type":Data_HuodongInfo,"desc":"getAllHuodongInfo"},
 					{"type":Data_HuodongGuanQiaInfo,"desc":"getAllHuoDongGuanQiaInfo"},
 					{"type":Data_ShenQiQiInfo,"desc":"getAllShenQiInfo"},
-					{"type":Data_ScatteredGuanQia,"desc":"getAllScatteredGuanQias"}
+					{"type":Data_ScatteredGuanQia,"desc":"getAllScatteredGuanQias"},
+					{"type":Data_91ShopItem,"desc":"getAll91Product"}
 				]
 			);
 			
@@ -107,7 +111,8 @@
 					{"type":Data_HuodongInfo,"desc":HuoDongInfo},
 					{"type":Data_HuodongGuanQiaInfo,"desc":GuanQiaInfo},
 					{"type":Data_ShenQiQiInfo,"desc":ShenQiInfo},
-					{"type":Data_ScatteredGuanQia,"desc":GuanQiaInfo}
+					{"type":Data_ScatteredGuanQia,"desc":GuanQiaInfo},
+					{"type":Data_91ShopItem,"desc":ProductInfo91}
 				]
 			);
 			
@@ -310,7 +315,7 @@
 			protected function windowedapplication2_creationCompleteHandler(event:FlexEvent):void
 			{
 				allCheckBoxs = [armCheck,heroCheck,skillCheck,chapterCheck,chapterGuanQiaCheck,guangqiaCheck,danboCheck,enemyUnitCheck,guanqiaHeroInfoCheck,
-					battlecardData,questData,bossGuanQiaCheck,huodongInfo,huodongguanqiainfo,shenqiInfo,scatteredInfo];
+					battlecardData,questData,bossGuanQiaCheck,huodongInfo,huodongguanqiainfo,shenqiInfo,scatteredInfo,shopitem];
 			}
 			
 			protected function selectAll_changeHandler(event:Event):void
@@ -328,46 +333,57 @@
 		]]>
 	</fx:Script>
 	
-	<s:BorderContainer id="allSelectors" top="5" height="97" backgroundAlpha="0" borderAlpha="1"
-					   horizontalCenter="0">
-		<s:layout >
-			<s:VerticalLayout gap="5" />
-		</s:layout>
-		<s:HGroup horizontalCenter="0" >
-			<s:CheckBox id="armCheck" label="兵种数据" selected="true" name="1"/>
-			<s:CheckBox id="heroCheck" label="英雄数据" selected="true" name="2"/>
-			<s:CheckBox id="skillCheck" label="技能数据" selected="true" name="3"/>
-			<s:CheckBox id="bossGuanQiaCheck" label="boss关卡数据" selected="true" name="12"/>
+	<s:VGroup horizontalAlign="center" horizontalCenter="0">
+		
+		<s:BorderContainer id="allSelectors" top="5" height="116" backgroundAlpha="0" borderAlpha="1"
+						   horizontalCenter="0">
+			<s:layout >
+				<s:VerticalLayout gap="5" />
+			</s:layout>
+			<s:HGroup horizontalCenter="0" >
+				<s:CheckBox id="armCheck" label="兵种数据" selected="true" name="1"/>
+				<s:CheckBox id="heroCheck" label="英雄数据" selected="true" name="2"/>
+				<s:CheckBox id="skillCheck" label="技能数据" selected="true" name="3"/>
+				<s:CheckBox id="bossGuanQiaCheck" label="boss关卡数据" selected="true" name="12"/>
+			</s:HGroup>
+			<s:HGroup horizontalCenter="0">
+				<s:CheckBox id="chapterCheck" label="章节数据" selected="true" name="4"/>
+				<s:CheckBox id="chapterGuanQiaCheck" label="章节关卡数据" selected="true" name="5"/>
+				<s:CheckBox id="guangqiaCheck" label="关卡数据" selected="true" name="6"/>
+				<s:CheckBox id="danboCheck" label="单波敌人数据" selected="true" name="7"/>
+			</s:HGroup>
+			<s:HGroup horizontalCenter="0">
+				<s:CheckBox id="enemyUnitCheck" label="敌人单位" selected="true" name="8"/>
+				<s:CheckBox id="guanqiaHeroInfoCheck" label="镇守英雄数据" selected="true" name="9"/>
+				<s:CheckBox id="battlecardData" label="卡牌数据" selected="true" name="10"/>
+				<s:CheckBox id="questData" label="任务数据" selected="true" name="11"/>
+			</s:HGroup>
+			<s:HGroup horizontalCenter="0">
+				<s:CheckBox id="huodongInfo" label="活动信息" selected="true" name="13" />
+				<s:CheckBox id="huodongguanqiainfo" label="活动关卡信息" selected="true" name="14" />
+				<s:CheckBox id="shenqiInfo" label="神器信息" selected="true" name="15" />
+				<s:CheckBox id="scatteredInfo" label="独立副本信息" selected="true" name="16" />
+			</s:HGroup>
+			
+			<s:HGroup horizontalCenter="0">
+				<s:CheckBox id="shopitem" label="91商品" selected="true" name="17" />
+			</s:HGroup>
+			
+		</s:BorderContainer>
+		
+		<s:HGroup horizontalAlign="center" verticalAlign="middle" horizontalCenter="0" bottom="5">
+			<s:Button buttonMode="true" id="btnOk" click="btnOk_clickHandler(event)" label="读取"/>
+			<s:Button buttonMode="true" id="btnExport" click="btnExport_clickHandler(event)" label="导出" enabled="{canExport}"/>
 		</s:HGroup>
-		<s:HGroup horizontalCenter="0">
-			<s:CheckBox id="chapterCheck" label="章节数据" selected="true" name="4"/>
-			<s:CheckBox id="chapterGuanQiaCheck" label="章节关卡数据" selected="true" name="5"/>
-			<s:CheckBox id="guangqiaCheck" label="关卡数据" selected="true" name="6"/>
-			<s:CheckBox id="danboCheck" label="单波敌人数据" selected="true" name="7"/>
+		
+		<s:HGroup y="110" horizontalAlign="center" horizontalCenter="0" gap="10" verticalAlign="middle">
+			<s:CheckBox id="selectAll" change="selectAll_changeHandler(event)" label="全选" selected="true" />
+			<s:Label x="-8" y="61" width="144" text="准备就绪" textAlign="center" id="statusShow"/>
+			<s:Label text="后缀名" verticalAlign="middle" />
+			<s:TextInput id="fileTypeInput" text=".cfg" width="80" />
 		</s:HGroup>
-		<s:HGroup horizontalCenter="0">
-			<s:CheckBox id="enemyUnitCheck" label="敌人单位" selected="true" name="8"/>
-			<s:CheckBox id="guanqiaHeroInfoCheck" label="镇守英雄数据" selected="true" name="9"/>
-			<s:CheckBox id="battlecardData" label="卡牌数据" selected="true" name="10"/>
-			<s:CheckBox id="questData" label="任务数据" selected="true" name="11"/>
-		</s:HGroup>
-		<s:HGroup horizontalCenter="0">
-			<s:CheckBox id="huodongInfo" label="活动信息" selected="true" name="13" />
-			<s:CheckBox id="huodongguanqiainfo" label="活动关卡信息" selected="true" name="14" />
-			<s:CheckBox id="shenqiInfo" label="神器信息" selected="true" name="15" />
-			<s:CheckBox id="scatteredInfo" label="独立副本信息" selected="true" name="16" />
-		</s:HGroup>
-	</s:BorderContainer>
+		
+	</s:VGroup>
 	
-	<s:HGroup horizontalAlign="center" verticalAlign="middle" horizontalCenter="0" bottom="5">
-		<s:Button buttonMode="true" id="btnOk" click="btnOk_clickHandler(event)" label="读取"/>
-		<s:Button buttonMode="true" id="btnExport" click="btnExport_clickHandler(event)" label="导出" enabled="{canExport}"/>
-	</s:HGroup>
 	
-	<s:HGroup y="110" horizontalAlign="center" horizontalCenter="0" gap="10" verticalAlign="middle">
-		<s:CheckBox id="selectAll" change="selectAll_changeHandler(event)" label="全选" selected="true" />
-		<s:Label x="-8" y="61" width="144" text="准备就绪" textAlign="center" id="statusShow"/>
-		<s:Label text="后缀名" verticalAlign="middle" />
-		<s:TextInput id="fileTypeInput" text=".cfg" width="80" />
-	</s:HGroup>
 </s:BorderContainer>
